@@ -1,0 +1,24 @@
+[project]
+name = "lfm2-hybrid"
+version = "0.0.1"
+description = "POC for LFM2 hybrid (MLP + SSM)"
+readme = "AGENTS.md"
+requires-python = ">=3.10"
+authors = [{ name = "Contributors" }]
+dependencies = [
+  # Pin torch only in your environment; left unpinned here for portability
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "ruff",
+  "black",
+  "mypy",
+  "pyright; platform_system == 'Linux'",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

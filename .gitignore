@@ -1,0 +1,47 @@
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Python build/runtime
+__pycache__/
+*.py[cod]
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+eggs/
+.cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Testing / tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pylint.d/
+.coverage
+coverage.xml
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Project artifacts
+export/
+*.npz
+*.pt
+*.pth
+*.ckpt
+
+# Local configs/secrets
+.env
+
+# Ignore contributor guide from VCS
+AGENTS.md
+agents.md

@@ -1,0 +1,9 @@
+{
+  "vocab_size": 256,
+  "d_model": 128,
+  "n_layers": 2,
+  "attn_every": 2,
+  "batch_size": 2,
+  "seq_len": 16
+}
+
