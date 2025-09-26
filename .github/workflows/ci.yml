@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v2
+
+      - name: Create venv and install deps
+        run: |
+          uv venv
+          . .venv/bin/activate
+          uv pip install -e .[dev]
+          uv pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.2,<3"
+          uv pip install "transformers>=4.41,<5"
+
+      - name: Lint
+        run: |
+          uv run ruff check src tests
+          uv run black --check src tests
+
+      - name: Tests
+        run: |
+          uv run pytest -q
+
