@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import json
-import os
 import random
 
 
 def load_config(path: str) -> dict:
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         if path.endswith(".json"):
             return json.load(f)
         # Minimal fallback: parse key=value lines
@@ -45,4 +44,3 @@ def set_seed(seed: int = 42):
         np.random.seed(seed)
     except Exception:
         pass
-

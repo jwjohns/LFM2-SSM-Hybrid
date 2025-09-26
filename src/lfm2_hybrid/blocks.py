@@ -90,7 +90,9 @@ def _apply_rope(x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.
     return torch.stack([rx1, rx2], dim=-1).reshape(B, H, T, D)
 
 
-def _rope_cache(T: int, hd: int, device, base: float = 10000.0) -> tuple[torch.Tensor, torch.Tensor]:
+def _rope_cache(
+    T: int, hd: int, device, base: float = 10000.0
+) -> tuple[torch.Tensor, torch.Tensor]:
     theta = 1.0 / (base ** (torch.arange(0, hd, 2, device=device).float() / hd))
     t = torch.arange(T, device=device).float()
     freqs = torch.einsum("t,d->td", t, theta)  # (T, hd/2)
@@ -100,7 +102,14 @@ def _rope_cache(T: int, hd: int, device, base: float = 10000.0) -> tuple[torch.T
 
 
 class CausalSelfAttention(nn.Module):
-    def __init__(self, d: int, n_heads: int, n_kv_heads: int, dropout: float = 0.0, rope_theta: float = 10000.0):
+    def __init__(
+        self,
+        d: int,
+        n_heads: int,
+        n_kv_heads: int,
+        dropout: float = 0.0,
+        rope_theta: float = 10000.0,
+    ):
         super().__init__()
         assert d % n_heads == 0, "d must be divisible by n_heads"
         assert n_heads % n_kv_heads == 0, "n_heads must be multiple of n_kv_heads"
@@ -147,11 +156,24 @@ class CausalSelfAttention(nn.Module):
 
 
 class AttnBlock(nn.Module):
-    def __init__(self, d: int, n_heads: int = 4, n_kv_heads: Optional[int] = None, dropout: float = 0.0, rope_theta: float = 10000.0):
+    def __init__(
+        self,
+        d: int,
+        n_heads: int = 4,
+        n_kv_heads: int | None = None,
+        dropout: float = 0.0,
+        rope_theta: float = 10000.0,
+    ):
         super().__init__()
         self.n = RMSNorm(d)
         self.n_kv_heads = n_kv_heads if n_kv_heads is not None else n_heads
-        self.attn = CausalSelfAttention(d, n_heads=n_heads, n_kv_heads=self.n_kv_heads, dropout=dropout, rope_theta=rope_theta)
+        self.attn = CausalSelfAttention(
+            d,
+            n_heads=n_heads,
+            n_kv_heads=self.n_kv_heads,
+            dropout=dropout,
+            rope_theta=rope_theta,
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         h = self.n(x)

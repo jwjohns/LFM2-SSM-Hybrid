@@ -3,7 +3,7 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 
-from .blocks import SSMBlock, AttnBlock, RMSNorm, HybridBlockParallel
+from .blocks import AttnBlock, HybridBlockParallel, RMSNorm, SSMBlock
 
 
 class LFM2_SSM_Small(nn.Module):
