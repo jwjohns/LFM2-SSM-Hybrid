@@ -1,12 +1,17 @@
-# LFM2 Hybrid POC — Setup, Init, Train, Export
+# LFM2-SSM-Hybrid
+
+Setup, Init, Train, Export
 
 This repo contains a PyTorch implementation of a hybrid MLP + SSM decoder with Nemotron‑style options (RoPE, grouped‑query attention, parallel residual). It includes scripts to initialize from LiquidAI/LFM2‑1.2B in your local Hugging Face cache, train on text, generate, export weights, and run parity checks for a llama.cpp port.
 
-## Prerequisites
+## Prerequisites (UV only)
 - Python 3.10+
-- PyTorch (CPU or CUDA): `pip install torch`
-- Transformers (for HF cache + tokenizer): `pip install transformers`
-- Optional dev tools: `pip install -e .[dev]` (ruff, black, pytest, etc.)
+- We use UV exclusively for Python management: https://docs.astral.sh/uv/
+- Create env and install tooling and deps:
+  - `uv venv`
+  - `source .venv/bin/activate`
+  - `uv pip install -e .[dev]`
+  - `uv pip install torch transformers`
 
 Directory highlights
 - `src/lfm2_hybrid/`: model and blocks (RMSNorm, GatedMLP, DiagonalSSM, RoPE + GQA attention)
@@ -77,11 +82,12 @@ Generate greedily from a checkpoint or a partially initialized model.
 - Names: exporter uses PyTorch `state_dict` keys; read `meta.json` and map to your llama.cpp schema (e.g., `attn_q/k/v/o`, `ffn_gate/up/down`, `attention_norm`, `ffn_norm`, `tok_embeddings`, `output`).
 - Parallel residual: sum SSM and MLP branches off the same input; match your C++ topology for parity.
 
-## Makefile Shortcuts
-- `make train` → quick CPU training demo
-- `make infer` → simple greedy generation
-- `make export` → export NPZ
-- `make parity` → parity helper
+## Makefile Shortcuts (UV-backed)
+- `make setup` → create `.venv` and install dev + torch + transformers via UV
+- `make train` → quick CPU training demo (UV run)
+- `make infer` → simple greedy generation (UV run)
+- `make export` → export NPZ (UV run)
+- `make parity` → parity helper (UV run)
 
 ## Troubleshooting
 - Torch/Transformers missing: `pip install torch transformers`.
@@ -94,4 +100,3 @@ Generate greedily from a checkpoint or a partially initialized model.
 ## Notes & Next Steps
 - Current HF → hybrid mapping copies embeddings, final norm, and lm_head. If you want deeper 1:1 initialization, provide exact HF module names per layer and we’ll add a converter.
 - For datasets beyond a single file, wire a loader (HF Datasets) and curriculum; scripts are structured to extend easily.
-
